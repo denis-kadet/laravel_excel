@@ -13,9 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('types', function (Blueprint $table) {
+        Schema::create('failed_rows', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
+            $table->string('key');
+            $table->string('message');
+            $table->foreignId('task_id')->index()->constrained('tasks');
             $table->timestamps();
         });
     }
@@ -27,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('types');
+        Schema::dropIfExists('failed_rows');
     }
 };
