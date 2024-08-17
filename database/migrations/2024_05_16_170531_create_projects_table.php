@@ -33,7 +33,7 @@ return new class extends Migration {
             $table->integer('payment_forth_step')->nullable();
 
             $table->text('comment')->nullable();
-            $table->decimal('effective_value', 13, 12)->nullable();
+            $table->decimal('effective_value', 12, 2)->nullable();
             $table->timestamps();
         });
     }
