@@ -12,6 +12,12 @@ class ProjectImport implements ToCollection
     */
     public function collection(Collection $collection)
     {
-        dd(111);
+       $test = $collection->each(function ($row) {
+           if($row === null){
+               return false;
+           }
+            return $row;
+        });
+       dd(123);
     }
 }
