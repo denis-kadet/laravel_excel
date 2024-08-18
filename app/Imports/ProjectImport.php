@@ -5,26 +5,21 @@ namespace App\Imports;
 use App\Factory\ProjectFactory;
 use App\Models\Project;
 use App\Models\Type;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\SkipsOnFailure;
 use Maatwebsite\Excel\Concerns\ToCollection;
-use Maatwebsite\Excel\Concerns\WithHeadingRow; // можно использовать имя строки заголовка в качестве атрибута правила
+use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithValidation;
 use Maatwebsite\Excel\Validators\Failure;
-use PhpOffice\PhpSpreadsheet\Shared\Date;
 
-class ProjectImport implements ToCollection, WithHeadingRow // WithValidation, SkipsOnFailure
+class ProjectImport implements ToCollection, WithHeadingRow, WithValidation, SkipsOnFailure
 {
     /**
      * @param Collection $collection
      */
     public function collection(Collection $collection): Collection
     {
-//dd($collection);
-        $typesMap = self::getTypesMap();
-
-        return $collection->map(function ($row) use ($typesMap) {
+        return $collection->map(function ($row) {
 
             if (!isset($row['naimenovanie'])) {
                 return false;
@@ -61,13 +56,13 @@ class ProjectImport implements ToCollection, WithHeadingRow // WithValidation, S
         return $map[$title] ?? Type::create(['title' => $title])->id;
     }
 
-//    public function rules(): array
-//    {
-//        // TODO: Implement rules() method.
-//    }
-//
-//    public function onFailure(Failure ...$failures)
-//    {
-//        // TODO: Implement onFailure() method.
-//    }
+    public function rules(): array
+    {
+        // TODO: Implement rules() method.
+    }
+
+    public function onFailure(Failure ...$failures)
+    {
+        // TODO: Implement onFailure() method.
+    }
 }
