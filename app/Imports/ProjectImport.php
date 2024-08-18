@@ -2,6 +2,7 @@
 
 namespace App\Imports;
 
+use App\Factory\ProjectFactory;
 use App\Models\Project;
 use App\Models\Type;
 use Illuminate\Support\Carbon;
@@ -14,43 +15,32 @@ class ProjectImport implements ToCollection
     /**
      * @param Collection $collection
      */
-    public function collection(Collection $collection): array
+    public function collection(Collection $collection): Collection
     {
 
         $typesMap = self::getTypesMap();
 
-        $col = $collection->map(function ($row) use ($typesMap) {
+        return $collection->map(function ($row) use ($typesMap) {
 
             if ($row[0] === 'Тип') {
                 return false;
             }
-            $col = [
-                'type_id' => self::getTypeId($typesMap, $row[0]),
-                'title' => $row[1],
-                'created_at_time' => Date::excelToDateTimeObject($row[2])->format('Y-m-d'),
-                'contracted_at' => Date::excelToDateTimeObject($row[4])->format('Y-m-d'),
-                'deadline' => Date::excelToDateTimeObject($row[9])->format('Y-m-d'),
-                'is_chain' => $row[3] == 'да',
-                'is_on_time' => $row[8] == 'да',
-                'has_outsource' => $row[5] == 'да',
-                'has_investors' => $row[6] == 'да',
-                'worker_count' => $row[4],
-                'service_count' => $row[14],
-                'payment_first_step' => $row[9],
-                'payment_second_step' => $row[10],
-                'payment_third_step' => $row[11],
-                'payment_forth_step' => $row[12],
-                'comment' => $row[15],
-                'effective_value' => (float) $row[16],
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
-            ];
-           // dd($col);
-            Project::create($col);
-            return $col;
-        });
+            // Данный код каждый раз делает запрос в таблицу Type - с точки зрения производительности хуже
+            // но при первом добавлении летит только что не повторяется
+            $typeId = Type::firstOrNew(['title' => $row[0]]);
+            $typeId->save();
 
-        return ['true'];
+            $projectFactory = ProjectFactory::make($row, $typeId);
+
+
+            return Project::updateOrCreate([
+                'type_id' => $projectFactory->getValues()['type_id'],
+                'title' => $projectFactory->getValues()['title'],
+                'created_at_time' => $projectFactory->getValues()['created_at_time'],
+                'contracted_at' => $projectFactory->getValues()['contracted_at'],
+            ], $projectFactory->getValues());
+
+        });
     }
 
     private static function getTypesMap(): array
