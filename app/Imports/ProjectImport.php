@@ -58,11 +58,45 @@ class ProjectImport implements ToCollection, WithHeadingRow, WithValidation, Ski
 
     public function rules(): array
     {
-        // TODO: Implement rules() method.
+        return [
+            'tip' => 'required|string',
+            'naimenovanie' => 'required|string',
+            'data_sozdaniia' => 'required|string',//integer убрать полсе ошибки
+            'setevik' => 'nullable|string',
+            'kolicestvo_ucastnikov' => 'nullable|string',//integer убрать полсе ошибки
+            'nalicie_autsorsinga' => 'nullable|string',
+            'nalicie_investorov' => 'nullable|string',
+            'dedlain' => 'nullable|integer',
+            'sdaca_v_srok' => 'nullable|string',
+            'vlozenie_v_pervyi_etap' => 'nullable|integer',
+            'vlozenie_vo_vtoroi_etap' => 'nullable|integer',
+            'vlozenie_v_tretii_etap' => 'nullable|integer',
+            'vlozenie_v_cetvertyi_etap' => 'nullable|integer',
+            'podpisanie_dogovora' => 'required|integer',
+            'kolicestvo_uslug' => 'nullable|integer',
+            'kommentarii' => 'nullable|string',
+            'znacenie_effektivnosti' => 'nullable|numeric',
+        ];
     }
 
     public function onFailure(Failure ...$failures)
     {
-        // TODO: Implement onFailure() method.
+        $colFailures = collect($failures);
+
+        $dataFailures = $colFailures->map(function ($failure) {
+            return [
+                'key' => $failure->attribute(),
+                'row' => $failure->row(),
+                'message' =>  implode(' ', $failure->errors()),
+            ];
+        });
+        dd($dataFailures);
+    }
+
+    public function customValidationMessages(): array
+    {
+        return [
+            'data_sozdaniia.string' => 'Должно быть числом :attribute.',
+        ];
     }
 }
