@@ -69,22 +69,22 @@ class ProjectFactory
     {
         return new self(
             $typeId->id,// self::getTypeId($typesMap, $row[0]) - но при первом добавление залетает все что не пожходит
-            $row[1],
-            Date::excelToDateTimeObject($row[2])->format('Y-m-d'),
-            Date::excelToDateTimeObject($row[13])->format('Y-m-d'),
-            isset($row[7]) ? Date::excelToDateTimeObject($row[7])->format('Y-m-d') : null,
-            isset($row[3]) ? $row[3] == 'да' : null,
-            isset($row[8]) ? $row[8] == 'да' : null,
-            isset($row[5]) ? $row[5] == 'да' : null,
-            isset($row[6]) ? $row[6] == 'да' : null,
-            $row[4] ?? null,
-            $row[14] ?? null,
-            $row[9] ?? null,
-            $row[10] ?? null,
-            $row[11] ?? null,
-            $row[12] ?? null,
-            $row[15] ?? null,
-            isset($row[16]) ? (float)$row[16] : null,
+            $row['naimenovanie'],
+            Date::excelToDateTimeObject($row['data_sozdaniia'])->format('Y-m-d'),
+            Date::excelToDateTimeObject($row['podpisanie_dogovora'])->format('Y-m-d'),
+            isset($row['dedlain']) ? Date::excelToDateTimeObject($row['dedlain'])->format('Y-m-d') : null,
+            isset($row['setevik']) ? $row['setevik'] == 'да' : null,
+            isset($row['sdaca_v_srok']) ? $row['sdaca_v_srok'] == 'да' : null,
+            isset($row['nalicie_autsorsinga']) ? $row['nalicie_autsorsinga'] == 'да' : null,
+            isset($row['nalicie_investorov']) ? $row['nalicie_investorov'] == 'да' : null,
+            $row['kolicestvo_ucastnikov'] ?? null,
+            $row['kolicestvo_uslug'] ?? null,
+            $row['vlozenie_v_pervyi_etap'] ?? null,
+            $row['vlozenie_vo_vtoroi_etap'] ?? null,
+            $row['vlozenie_v_tretii_etap'] ?? null,
+            $row['vlozenie_v_cetvertyi_etap'] ?? null,
+            $row['kommentarii'] ?? null,
+            isset($row['znacenie_effektivnosti']) ? (float)$row['znacenie_effektivnosti'] : null,
         );
     }
 

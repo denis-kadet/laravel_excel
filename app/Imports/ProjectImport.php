@@ -7,27 +7,31 @@ use App\Models\Project;
 use App\Models\Type;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
+use Maatwebsite\Excel\Concerns\SkipsOnFailure;
 use Maatwebsite\Excel\Concerns\ToCollection;
+use Maatwebsite\Excel\Concerns\WithHeadingRow; // можно использовать имя строки заголовка в качестве атрибута правила
+use Maatwebsite\Excel\Concerns\WithValidation;
+use Maatwebsite\Excel\Validators\Failure;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 
-class ProjectImport implements ToCollection
+class ProjectImport implements ToCollection, WithHeadingRow // WithValidation, SkipsOnFailure
 {
     /**
      * @param Collection $collection
      */
     public function collection(Collection $collection): Collection
     {
-
+//dd($collection);
         $typesMap = self::getTypesMap();
 
         return $collection->map(function ($row) use ($typesMap) {
 
-            if ($row[0] === 'Тип') {
+            if (!isset($row['naimenovanie'])) {
                 return false;
             }
             // Данный код каждый раз делает запрос в таблицу Type - с точки зрения производительности хуже
             // но при первом добавлении летит только что не повторяется
-            $typeId = Type::firstOrNew(['title' => $row[0]]);
+            $typeId = Type::firstOrNew(['title' => $row['tip']]);
             $typeId->save();
 
             $projectFactory = ProjectFactory::make($row, $typeId);
@@ -56,4 +60,14 @@ class ProjectImport implements ToCollection
     {
         return $map[$title] ?? Type::create(['title' => $title])->id;
     }
+
+//    public function rules(): array
+//    {
+//        // TODO: Implement rules() method.
+//    }
+//
+//    public function onFailure(Failure ...$failures)
+//    {
+//        // TODO: Implement onFailure() method.
+//    }
 }
