@@ -7,11 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class FailedRow extends Model
 {
-   protected $guarded = false;
-   protected $table = 'failed_rows';
+    protected $guarded = false;
+    protected $table = 'failed_rows';
 
-   public static function insertFailedRows($items)
-   {
-
-   }
+    public static function insertFailedRows($items)
+    {
+        $items->each(function ($item) {
+            return FailedRow::create($item);
+        });
+    }
 }

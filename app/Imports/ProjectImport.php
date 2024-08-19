@@ -3,6 +3,7 @@
 namespace App\Imports;
 
 use App\Factory\ProjectFactory;
+use App\Models\FailedRow;
 use App\Models\Project;
 use App\Models\Type;
 use Illuminate\Support\Collection;
@@ -61,9 +62,9 @@ class ProjectImport implements ToCollection, WithHeadingRow, WithValidation, Ski
         return [
             'tip' => 'required|string',
             'naimenovanie' => 'required|string',
-            'data_sozdaniia' => 'required|string',//integer убрать полсе ошибки
+            'data_sozdaniia' => 'required|integer',//string
             'setevik' => 'nullable|string',
-            'kolicestvo_ucastnikov' => 'nullable|string',//integer убрать полсе ошибки
+            'kolicestvo_ucastnikov' => 'nullable|integer',//string
             'nalicie_autsorsinga' => 'nullable|string',
             'nalicie_investorov' => 'nullable|string',
             'dedlain' => 'nullable|integer',
@@ -85,18 +86,42 @@ class ProjectImport implements ToCollection, WithHeadingRow, WithValidation, Ski
 
         $dataFailures = $colFailures->map(function ($failure) {
             return [
-                'key' => $failure->attribute(),
+                'key' => $this->attributesMap()[$failure->attribute()],
                 'row' => $failure->row(),
-                'message' =>  implode(' ', $failure->errors()),
+                'message' => implode(' ', $failure->errors()),
+                'task_id' => 3,
             ];
         });
-        dd($dataFailures);
+        if ($dataFailures->count()) FailedRow::insertFailedRows($dataFailures);
     }
 
     public function customValidationMessages(): array
     {
         return [
             'data_sozdaniia.string' => 'Должно быть числом :attribute.',
+        ];
+    }
+
+    private function attributesMap(): array
+    {
+        return [
+            'tip' => 'Тип',
+            'naimenovanie' => 'Наименование',
+            'data_sozdaniia' => 'Дата создания',
+            'setevik' => 'Сетевик',
+            'kolicestvo_ucastnikov' => 'Количество участников',
+            'nalicie_autsorsinga' => 'Наличие аутсорсинга',
+            'nalicie_investorov' => 'Наличие инвесторов',
+            'dedlain' => 'Дедлайн',
+            'sdaca_v_srok' => 'Сдача в срок',
+            'vlozenie_v_pervyi_etap' => 'Вложение в первый этап',
+            'vlozenie_vo_vtoroi_etap' => 'Вложение во второй этап',
+            'vlozenie_v_tretii_etap' => 'Вложение в третий этап',
+            'vlozenie_v_cetvertyi_etap' => 'Вложение в четвертый этап',
+            'podpisanie_dogovora' => 'Подписание договора',
+            'kolicestvo_uslug' => 'Количество участников',
+            'kommentarii' => 'Комментарий',
+            'znacenie_effektivnosti' => 'Значение эффективности',
         ];
     }
 }
