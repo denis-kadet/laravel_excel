@@ -36,10 +36,12 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+Route::group(['middleware' => ['auth']], function () {
+    Route::get('/projects', [ProjectController::class, 'index'])->name('project.index');
+    Route::get('/projects/import', [ProjectController::class, 'import'])->name('project.import');
+    Route::post('/projects/import', [ProjectController::class, 'importStore'])->name('project.import.store');
+    Route::get('/tasks', [TaskController::class, 'index'])->name('task.index');
+});
 
-Route::get('/projects', [ProjectController::class, 'index'])->name('project.index');
-Route::get('/projects/import', [ProjectController::class, 'import'])->name('project.import');
-Route::post('/projects/import', [ProjectController::class, 'importStore'])->name('project.import.store');
-Route::get('/tasks', [TaskController::class, 'index'])->name('task.index');
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

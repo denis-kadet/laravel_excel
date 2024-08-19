@@ -7,6 +7,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class FailedRow extends Model
 {
-   protected $guarded = false;
-   protected $table = 'failed_rows';
+    protected $guarded = false;
+    protected $table = 'failed_rows';
+
+    public static function insertFailedRows($items, $task)
+    {
+        $items->each(function ($item) {
+            return FailedRow::create($item);
+        });
+
+        $task->update(['status'=>Task::STATUS_ERROR]);
+    }
 }
