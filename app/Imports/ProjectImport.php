@@ -5,6 +5,7 @@ namespace App\Imports;
 use App\Factory\ProjectFactory;
 use App\Models\FailedRow;
 use App\Models\Project;
+use App\Models\Task;
 use App\Models\Type;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\SkipsOnFailure;
@@ -15,6 +16,16 @@ use Maatwebsite\Excel\Validators\Failure;
 
 class ProjectImport implements ToCollection, WithHeadingRow, WithValidation, SkipsOnFailure
 {
+    private Task $task;
+
+    /**
+     * @param $task
+     */
+    public function __construct($task)
+    {
+        $this->task = $task;
+    }
+
     /**
      * @param Collection $collection
      */
@@ -92,7 +103,7 @@ class ProjectImport implements ToCollection, WithHeadingRow, WithValidation, Ski
                 'task_id' => 3,
             ];
         });
-        if ($dataFailures->count()) FailedRow::insertFailedRows($dataFailures);
+        if ($dataFailures->count()) FailedRow::insertFailedRows($dataFailures, $this->task);
     }
 
     public function customValidationMessages(): array
