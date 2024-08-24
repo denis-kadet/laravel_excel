@@ -100,7 +100,7 @@ class ProjectImport implements ToCollection, WithHeadingRow, WithValidation, Ski
                 'key' => $this->attributesMap()[$failure->attribute()],
                 'row' => $failure->row(),
                 'message' => implode(' ', $failure->errors()),
-                'task_id' => 3,
+                'task_id' => $this->task->id,
             ];
         });
         if ($dataFailures->count()) FailedRow::insertFailedRows($dataFailures, $this->task);
