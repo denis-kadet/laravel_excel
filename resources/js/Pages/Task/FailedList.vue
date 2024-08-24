@@ -1,6 +1,9 @@
 <template>
     <div class="">
         <div class="">Index Task</div>
+        <div class="">
+            <Link class="text-sm" :href="router('task.index')">Назад</Link>
+        </div>
         <div class="mt-4 -mb-3">
             <div class="not-prose relative bg-slate-50 rounded-xl overflow-hidden dark:bg-slate-800/25">
                 <div style="background-position:10px 10px"
@@ -12,32 +15,44 @@
                             <thead>
                             <tr>
                                 <th class="border-b dark:border-slate-600 font-medium p-4 pl-8 pt-0 pb-3 text-slate-400 dark:text-slate-200 text-left">
-                                    Пользователь
+                                    ID
                                 </th>
                                 <th class="border-b dark:border-slate-600 font-medium p-4 pt-0 pb-3 text-slate-400 dark:text-slate-200 text-left">
-                                    Файл
+                                    Строка
                                 </th>
                                 <th class="border-b dark:border-slate-600 font-medium p-4 pr-8 pt-0 pb-3 text-slate-400 dark:text-slate-200 text-left">
-                                    Статус
+                                    Ключ
                                 </th>
                                 <th class="border-b dark:border-slate-600 font-medium p-4 pr-8 pt-0 pb-3 text-slate-400 dark:text-slate-200 text-left">
-                                    Ошибка (FailRows)
+                                    Сообщение
+                                </th>
+                                <th class="border-b dark:border-slate-600 font-medium p-4 pr-8 pt-0 pb-3 text-slate-400 dark:text-slate-200 text-left">
+                                    Номер задачи
+                                </th>
+                                <th class="border-b dark:border-slate-600 font-medium p-4 pr-8 pt-0 pb-3 text-slate-400 dark:text-slate-200 text-left">
+                                    Время создания
                                 </th>
                             </tr>
                             </thead>
                             <tbody class="bg-white dark:bg-slate-800">
-                            <tr v-for="task in tasks.data">
+                            <tr v-for="failed in failedList.data">
                                 <td class="border-b border-slate-100 dark:border-slate-700 p-4 pl-8 text-slate-500 dark:text-slate-400">
-                                    {{task.user.name}}
+                                    {{ failed.id }}
                                 </td>
                                 <td class="border-b border-slate-100 dark:border-slate-700 p-4 text-slate-500 dark:text-slate-400">
-                                    {{task.path.path}}
+                                    {{ failed.row }}
                                 </td>
                                 <td class="border-b border-slate-100 dark:border-slate-700 p-4 pr-8 text-slate-500 dark:text-slate-400">
-                                    {{task.status}}
+                                    {{ failed.key }}
                                 </td>
                                 <td class="border-b border-slate-100 dark:border-slate-700 p-4 pr-8 text-slate-500 dark:text-slate-400">
-                                    <Link v-if="task.failed_rows_count" :href="route('task.failed_list', task.id)">Строка ошибки</Link>
+                                    {{ failed.message }}
+                                </td>
+                                <td class="border-b border-slate-100 dark:border-slate-700 p-4 pr-8 text-slate-500 dark:text-slate-400">
+                                    {{ failed.task_id }}
+                                </td>
+                                <td class="border-b border-slate-100 dark:border-slate-700 p-4 pr-8 text-slate-500 dark:text-slate-400">
+                                    {{ failed.created_at }}
                                 </td>
                             </tr>
                             </tbody>
@@ -53,16 +68,21 @@
 
 <script>
 import MainLayout from "@/Layouts/MainLayout.vue";
-import {Link} from "@inertiajs/vue3";
+import {Link, router} from "@inertiajs/vue3";
 
 export default {
     name: "Index",
+    methods: {
+        router() {
+            return router
+        }
+    },
     layout: MainLayout,
     components: {
         Link,
     },
     props: [
-        'tasks'
+        'failedList'
     ],
 }
 </script>
