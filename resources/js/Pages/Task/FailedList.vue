@@ -2,7 +2,7 @@
     <div class="">
         <div class="">Index Task</div>
         <div class="">
-            <Link class="text-sm" :href="router('task.index')">Назад</Link>
+            <Link class="text-sm" :href="route('task.index')">Назад</Link>
         </div>
         <div class="mt-4 -mb-3">
             <div class="not-prose relative bg-slate-50 rounded-xl overflow-hidden dark:bg-slate-800/25">
@@ -63,26 +63,24 @@
                     class="absolute inset-0 pointer-events-none border border-black/5 rounded-xl dark:border-white/5"></div>
             </div>
         </div>
+        <Pagination :meta="failedList.meta"></Pagination>
     </div>
 </template>
 
 <script>
 import MainLayout from "@/Layouts/MainLayout.vue";
 import {Link, router} from "@inertiajs/vue3";
+import Pagination from "@/Components/Pagination.vue";
 
 export default {
     name: "Index",
-    methods: {
-        router() {
-            return router
-        }
-    },
     layout: MainLayout,
     components: {
+        Pagination,
         Link,
     },
     props: [
-        'failedList'
+        'failedList',
     ],
 }
 </script>
